@@ -1,0 +1,29 @@
+header
+    a(href="/").header__logo
+        i.fa-brands.fa-youtube
+    nav
+        ul
+            li
+                a(href="/search")
+                    i.fa-solid.fa-magnifying-glass
+            if loggedIn
+                li
+                    a(href="/videos/upload") Upload Video
+                li
+                    a(href="/users/edit") Edit Profile
+                li
+                    a(href="/users/logout") Log Out
+                li
+                    a(href=`/users/${loggedInUser._id}`)
+                        if loggedInUser.socialOnly
+                            img.header__avatar(src=loggedInUser.avatarUrl)
+                        else
+                            if loggedInUser.avatarUrl
+                                img.header__avatar(src="/" + loggedInUser.avatarUrl)
+                            else
+                                span 😀
+            else
+                li
+                    a(href="/login") Login
+                li
+                    a(href="/join").header__btn Join
