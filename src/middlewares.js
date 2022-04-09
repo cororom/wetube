@@ -35,6 +35,12 @@ export const normalLoginOnlyMiddleware = (req, res, next) => {
   next();
 };
 
+export const videoUploadMiddleware = (req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+};
+
 export const avatarUpload = multer({ dest: "uploads/avatars/", limits: { fileSize: 3000000 } });
 
 export const videoUpload = multer({ dest: "uploads/videos/", limits: { fileSize: 10000000 } });

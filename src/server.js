@@ -3,6 +3,7 @@ import morgan from "morgan";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import favicon from "serve-favicon";
+import path from "path";
 import rootRouter from "./routers/rootRouter";
 import usersRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
@@ -10,11 +11,11 @@ import apiRouter from "./routers/apiRouter";
 import { localsMiddleware } from "./middlewares";
 
 const app = express();
-app.use(favicon(__dirname + "/favicon.ico"));
 const logger = morgan("dev");
 
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
+app.use(favicon(path.join(__dirname, "favicon.ico")));
 app.use(logger);
 app.use(express.urlencoded({ extended: true }));
 

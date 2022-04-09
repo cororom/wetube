@@ -1,5 +1,9 @@
 import Video from "../models/Video";
 import User from "../models/User";
+import ffmpeg from "fluent-ffmpeg";
+import { path as ffmpeg_path } from "@ffmpeg-installer/ffmpeg";
+import { path as ffprobe_path } from "@ffprobe-installer/ffprobe";
+import FastPreview from "fast-preview";
 
 export const home = async (req, res) => {
   const videos = await Video.find({}).sort({ createdAt: "desc" }).populate("owner");
@@ -64,14 +68,42 @@ export const postUpload = async (req, res) => {
     session: {
       user: { _id },
     },
-    file: { path: fileUrl },
+    files: { video, thumb },
     body: { title, description, hashtags },
   } = req;
+  const { filename: videoName, path: videoPath } = video[0];
+  const uploadDir = videoPath.split("/").slice(0, -1).join("/");
+  let thumbUrl;
+  if (thumb === undefined) {
+    thumbUrl = `${videoPath}_thumb.jpg`;
+    ffmpeg(`./${videoPath}`).screenshots({
+      count: 1,
+      filename: `${videoName}_thumb.jpg`,
+      folder: `./${uploadDir}`,
+      size: "320x240",
+    });
+  } else {
+    thumbUrl = thumb[0].path;
+  }
+  FastPreview.setFfmpegPath(ffmpeg_path);
+  FastPreview.setFfprobePath(ffprobe_path);
+  const preview = new FastPreview(videoPath, {
+    clip_count: 4,
+    clip_time: 4,
+    clip_select_strategy: "max-size", // max-size min-size random
+    clip_range: [0.1, 0.9],
+    fps_rate: 10, // 'keep' number
+    dist_path: `./${uploadDir}`,
+    speed_multi: 2,
+  });
+  preview.exec();
   try {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl,
+      fileUrl: videoPath,
+      thumbUrl,
+      previewUrl: `${uploadDir}/${preview.filename}.webp`,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
