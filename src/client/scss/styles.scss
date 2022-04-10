@@ -33,3 +33,68 @@ main {
   margin: 0 auto;
   margin-top: 50px;
 }
+
+@keyframes goAway {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+}
+
+.message {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  max-width: 200px;
+  padding: 10px;
+  border-radius: 7px;
+  animation: goAway 0.5s ease-in-out forwards;
+  animation-delay: 5s;
+  box-shadow: rgb(0 0 0 / 45%) 0px 25px 20px -20px;
+  display: flex;
+  background-color: white;
+  .message__icon {
+    display: block;
+    & i {
+      font-size: 32px;
+    }
+  }
+  &.error {
+    border-left: 7px solid #fd6262;
+    .message__icon {
+      color: #fd6262;
+    }
+  }
+  &.info {
+    border-left: 7px solid #ffc12b;
+    .message__icon {
+      color: #ffc12b;
+    }
+  }
+  &.success {
+    border-left: 7px solid #4ac860;
+    .message__icon {
+      color: #4ac860;
+    }
+  }
+  .message__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10px;
+    line-height: 16px;
+    .title {
+      color: #495057;
+      font-weight: 700;
+    }
+    .subtitle {
+      color: #adb5bd;
+    }
+  }
+}

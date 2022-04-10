@@ -1,0 +1,13 @@
+mixin message(kind,text)
+    div.message(class=kind)
+        div.message__border
+        span.message__icon
+            if kind === "error"
+                i.fa-regular.fa-circle-xmark
+            if kind === "info"
+                i.fa-solid.fa-circle-info
+            if kind === "success"
+                i.fa-regular.fa-circle-check
+        div.message__text
+            span.title=kind.charAt(0).toUpperCase() + kind.slice(1)
+            span.subtitle=text
