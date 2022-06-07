@@ -1,16 +1,22 @@
 extends ../base
 
+block sidebar
+    include ../partials/drawer
+
 block content
-    if errorMessage
-        p=errorMessage
-    form(method="POST" enctype="multipart/form-data").edit-profile__form
-        label(for="avatar") Avatar
-        input(type="file" id="avatar" name="avatar" accept="image/*")
-        input(placeholder="Name" name="name" type="text" value=loggedInUser.name required)
-        input(placeholder="Email" name="email" type="email" value=loggedInUser.email required)
-        input(placeholder="Username" name="username" type="text" value=loggedInUser.username required)
-        input(placeholder="Location" name="location" type="text" value=loggedInUser.location required)
-        input(type="submit" value="Update Profile")
-        if !loggedInUser.socialOnly
-            div.edit-profile__password
-                a(href="change-password") Change Password &rarr;
+    div.container
+        div.edit-profile
+            form(method="POST" enctype="multipart/form-data").edit-profile__form
+                label(for="avatar") Avatar
+                input(type="file" id="avatar" name="avatar" accept="image/*")
+                input(placeholder="Name" name="name" type="text" value=loggedInUser.name required)
+                input(placeholder="Email" name="email" type="email" value=loggedInUser.email required)
+                input(placeholder="Username" name="username" type="text" value=loggedInUser.username required)
+                input(placeholder="Location" name="location" type="text" value=loggedInUser.location required)
+                input(type="submit" value="Update Profile")
+                if !loggedInUser.socialOnly
+                    div.edit-profile__password
+                        a(href="change-password") Change Password &rarr;
+
+block scripts
+    script(src="/static/js/sidebarDrawer.js")

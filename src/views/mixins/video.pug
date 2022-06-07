@@ -1,8 +1,16 @@
-mixin video(video)
-    a(href=`/videos/${video.id}` data-id=video.id data-preview=video.previewUrl data-thumb=video.thumbUrl).video-mixin
-        div.video-mixin__thumb(style=`background-image:url(${video.thumbUrl});background-size:cover;background-position:center;`)
+mixin video(video, uploadedTime)
+    div(data-id=video.id data-preview="/" + video.previewUrl data-thumb="/" + video.thumbUrl).video-mixin.video-item
+        div.video-mixin__thumb(style=`background-image:url(/${video.thumbUrl});background-size:cover;background-position:center;`)
         div.video-mixin__data
-            span.video-mixin__title=video.title
+            div.video-mixin__author
+                if video.owner.avatarUrl !== undefined
+                    img(src=`${video.owner.avatarUrl}`)
+                else
+                    img(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
             div.video-mixin__meta
-                span #{video.owner.name} • 
-                span #{video.meta.views} 회
+                h3.video-mixin__title=video.title
+                a(href=`/users/${video.owner._id}`) #{video.owner.name}
+                if uploadedTime
+                    span #{video.meta.views} #{video.meta.views === 1 ? "view" : "views"} • #{uploadedTime[video.id].diff} #{uploadedTime[video.id].unit}
+                else
+                    span #{video.meta.views} #{video.meta.views === 1 ? "view" : "views"} • #{video.createdAt.toISOString().split('T')[0]}

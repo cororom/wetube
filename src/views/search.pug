@@ -1,14 +1,30 @@
 extends base
-include mixins/video
+include mixins/video-row
+
+block sidebar
+    include partials/sidebar
 
 block content
-    form(method="GET").search__form
-        input(placeholder="Search by title" name="keyword" type="text")
-        button
-            i.fas.fa-search
+    div.content.feed.search__result
+        div.container
+            if hashtags > 0
+                div.hashtags__including-results
+                    span Including results for:
+                    span  #{keyword}
+                div.hashtags__section
+                    a(href=`/videos/hashtag/${keyword.startsWith("#") ? keyword.slice(1) : keyword}`)
+                        div.hashtags__content
+                            div.hashtags__thumbnail
+                                div.material-icons tag
+                            div.hashtags__info
+                                span.hashtags__title #{keyword}
+                                span.hashtags__text #{hashtags} #{(hashtags > 1) ? "videos" : "video"}
+            div.search__content
+                if videos.length > 0
+                        each item in videos
+                            +videoRow(item.video)
+                else
+                    span.empty__message No videos found
 
-    div.video-grid
-        each video in videos
-            +video(video)
-        else
-            span.empty__message No videos found
+block scripts
+    script(src="/static/js/videoMain.js")

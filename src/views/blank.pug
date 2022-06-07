@@ -1,0 +1,23 @@
+include mixins/message
+
+doctype html
+html(lang="ko")
+    head
+        if !pageTitle
+            title=siteName
+        else
+            title #{pageTitle} - #{siteName}
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css")
+        link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
+        link(rel="stylesheet" href="/static/css/styles.css")
+    body
+        if messages.error
+            +message("error", messages.error)
+        if messages.info
+            +message("info", messages.info)
+        if messages.success
+            +message("success", messages.success)
+        main
+            block content
+    script(src="/static/js/main.js")
+    block scripts

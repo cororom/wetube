@@ -1,0 +1,23 @@
+extends ../base
+include ../mixins/video-col
+
+block sidebar
+    include ../partials/sidebar
+
+block content
+    div.content.feed
+        div.container
+            each key in Object.keys(videos)
+                div.header
+                    h3.title=moment(videos[key][0].createdAt).format("MMM DD")
+                div.library-grid
+                    each video, idx in videos[key]
+                        +video(video, uploadedTime[key][idx])
+                hr.library-line
+            else
+                div.header
+                    h3.title Today
+                span.empty__message This list has no videos
+
+block scripts
+    script(src="/static/js/videoMain.js")

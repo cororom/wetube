@@ -1,0 +1,11 @@
+mixin video(video, uploadedTime)
+    div(data-id=video._id data-preview="/" + video.previewUrl data-thumb="/" + video.thumbUrl).video-col-mixin.video-item
+        div.video-mixin__thumb(style=`background-image:url(/${video.thumbUrl});background-size:cover;background-position:center;`)
+        div.video-mixin__data
+            div.video-mixin__meta
+                h3.video-mixin__title=video.title
+                a(href=`/users/${video.owner._id}`) #{video.owner.name}
+                if uploadedTime
+                    span #{video.meta.views} #{video.meta.views === 1 ? "view" : "views"} • #{uploadedTime[video._id].diff} #{uploadedTime[video._id].unit}
+                else
+                    span #{video.meta.views} #{video.meta.views === 1 ? "view" : "views"} • #{video.createdAt.toISOString().split('T')[0]}

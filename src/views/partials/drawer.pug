@@ -1,0 +1,62 @@
+div.drawer
+    div.sidebar
+        div.nav
+            if url === "/"
+                a(href="/").nav__link.active
+                    i.material-icons home
+                    span Home
+            else
+                a(href="/").nav__link
+                    i.material-icons home
+                    span Home
+            if usl === "/videos/subscriptions"
+                a(href="/videos/subscriptions").nav__link.active
+                    i.material-icons subscriptions
+                    span Subscriptions
+            else
+                a(href="/videos/subscriptions").nav__link
+                    i.material-icons subscriptions
+                    span Subscriptions
+            hr
+            if url === "/videos/library"
+                a(href="/videos/library").nav__link.active
+                    i.material-icons library_add_check
+                    span Library
+            else
+                a(href="/videos/library").nav__link
+                    i.material-icons library_add_check
+                    span Library
+            if url === "/videos/history"
+                a(href="/videos/history").nav__link.active
+                    i.material-icons history
+                    span History
+            else
+                a(href="/videos/history").nav__link
+                    i.material-icons history
+                    span History
+            if (loggedIn)
+                if url === `/users/${loggedInUser._id}`
+                    a(href=`/users/${loggedInUser._id}`).nav__link.active
+                        i.material-icons play_arrow
+                        span Your Videos
+                else
+                    a(href=`/users/${loggedInUser._id}`).nav__link
+                        i.material-icons play_arrow
+                        span Your Videos
+                if url === "/videos/playlist/later"
+                    a(href="/videos/playlist/later").nav__link.active
+                        i.material-icons watch_later
+                        span Watch Later
+                else
+                    a(href="/videos/playlist/later").nav__link
+                        i.material-icons watch_later
+                        span Watch Later
+                if url === "/videos/playlist/liked"
+                    a(href="/videos/playlist/liked").nav__link.active
+                        i.material-icons thumb_up
+                        span Liked Videos
+                else
+                    a(href="/videos/playlist/liked").nav__link
+                        i.material-icons thumb_up
+                        span Liked Videos
+            include footer

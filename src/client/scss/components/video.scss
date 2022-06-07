@@ -1,20 +1,135 @@
 .video-mixin {
+  width: 100%;
+  margin-bottom: 30px;
+  cursor: pointer;
   .video-mixin__thumb {
-    height: 140px;
-    border-radius: 7px;
     width: 100%;
-    background-color: ivory;
+    height: 180px;
+    img {
+      object-fit: cover;
+      height: 94%;
+      width: 100%;
+    }
   }
   .video-mixin__data {
+    display: flex;
     padding: 0px 15px;
+    margin-top: 12px;
+    .video-mixin__author {
+      img {
+        object-fit: cover;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        margin-right: 10px;
+      }
+    }
     .video-mixin__title {
       font-size: 18px;
       display: block;
-      margin-top: 10px;
+      line-height: 18px;
+      margin: 0 0 6px;
     }
     .video-mixin__meta {
-      margin-top: 5px;
-      font-size: 12px;
+      a,
+      span {
+        display: block;
+        text-decoration: none;
+        color: rgb(96, 96, 96);
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+.video-row-mixin {
+  display: flex;
+  width: 100%;
+  margin-bottom: 30px;
+  cursor: pointer;
+  .video-mixin__thumb {
+    width: 100%;
+    min-width: 120px;
+    max-width: 246px;
+    height: 138px;
+    img {
+      object-fit: cover;
+      height: 94%;
+      width: 100%;
+    }
+  }
+  .video-mixin__data {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0px 15px;
+    .video-mixin__title {
+      font-size: 1.8rem;
+      display: block;
+      margin: 0 0 6px;
+    }
+    .video-mixin__meta {
+      display: flex;
+      align-items: center;
+      color: #aaa;
+      a,
+      span {
+        display: block;
+        text-decoration: none;
+        font-size: 15px;
+      }
+      .video-mixin__separator {
+        margin: 0 4px;
+      }
+    }
+    .video-mixin__description {
+      padding-top: 8px;
+      margin-bottom: 8px;
+      color: #aaa;
+    }
+  }
+}
+
+.video-col-mixin {
+  width: 100%;
+  margin-bottom: 30px;
+  cursor: pointer;
+  .video-mixin__thumb {
+    width: 100%;
+    height: 140px;
+    img {
+      object-fit: cover;
+      height: 94%;
+      width: 100%;
+    }
+  }
+  .video-mixin__data {
+    display: flex;
+    margin-top: 12px;
+    .video-mixin__author {
+      img {
+        object-fit: cover;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        margin-right: 10px;
+      }
+    }
+    .video-mixin__title {
+      font-size: 18px;
+      display: block;
+      line-height: 18px;
+      margin: 0 0 5px;
+    }
+    .video-mixin__meta {
+      a,
+      span {
+        display: block;
+        text-decoration: none;
+        color: rgb(96, 96, 96);
+        font-size: 15px;
+        line-height: 1.1;
+      }
     }
   }
 }

@@ -1,15 +1,27 @@
 extends ../base
 include ../mixins/video
 
+block sidebar
+    include ../partials/sidebar
+
 block content
-    div.profile__data
-        if loggedInUser.socialOnly
-            img(src=user.avatarUrl).avatar
-        else
-            img(src="/" + user.avatarUrl).avatar
-        h3=user.name
-    .video-grid
-        each video in user.videos
-            +video(video)
-        else
-            span.empty__message No videos found
+    div.content
+        div.container
+            div.profile__data
+                if user.socialOnly
+                    img(src=user.avatarUrl).avatar
+                else
+                    if user.avatarUrl
+                        img(src="/" + user.avatarUrl).avatar
+                    else
+                        div.avatar 😀
+                h3=user.name
+            if (user.videos)
+                div.video-grid
+                    each video in user.videos
+                        +video(video, uploadedTime)
+            else
+                span.empty__message No videos found
+
+block scripts
+    script(src="/static/js/videoMain.js")

@@ -1,7 +1,10 @@
 extends ../base
 
+block sidebar
+    include ../partials/drawer
+
 block content
-    div.upload__container
+    div.container
         div.upload__video
             video#preview
             button#actionBtn.social__btn Start Recording
@@ -19,3 +22,4 @@ block content
 
 block scripts
     script(src="/static/js/recorder.js")
+    script(src="/static/js/sidebarDrawer.js")

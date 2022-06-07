@@ -5,7 +5,10 @@ header {
   align-items: center;
   .header__logo {
     color: $red;
-    font-size: 38px;
+    img {
+      width: 93px;
+      height: 40px;
+    }
   }
   ul {
     display: flex;

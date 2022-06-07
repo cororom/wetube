@@ -1,0 +1,13 @@
+mixin videoRow(video)
+    div(data-id=video._id data-preview="/" + video.previewUrl data-thumb="/" + video.thumbUrl).video-row-mixin.video-item
+        div.video-mixin__thumb(style=`background-image:url(/${video.thumbUrl});background-size:cover;background-position:center;`)
+        div.video-mixin__data
+            h3.video-mixin__title=video.title
+            div.video-mixin__meta
+                div
+                    a(href=`/users/${video.owner._id}`) #{video.owner.name}
+                div.video-mixin__separator •
+                div
+                    span #{video.meta.views} #{video.meta.views === 1 ? "view" : "views"}
+            div.video-mixin__description
+                span #{video.description > 50 ? `${video.description.slice(0, 50 - 1)}...` : video.description }

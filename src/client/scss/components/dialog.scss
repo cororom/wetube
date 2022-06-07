@@ -1,0 +1,47 @@
+.dialog {
+  display: block;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  .save__dialog {
+    outline: none;
+    z-index: 3;
+    position: fixed;
+    margin: 0 auto;
+    top: 40%;
+    left: 0;
+    right: 0;
+    width: 250px;
+    background-color: #212121;
+    .save__header {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid #303030;
+      .save__title {
+        width: 100%;
+        line-height: 2.2rem;
+      }
+      .save__close {
+        .material-icons {
+          padding: 0 !important;
+        }
+      }
+    }
+    .save__playlists {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      .save__label {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 16px;
+        .material-icons {
+          padding: 0 !important;
+        }
+      }
+    }
+  }
+}

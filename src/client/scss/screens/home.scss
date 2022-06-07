@@ -1,2 +1,88 @@
-.video__grid {
+.scroll-container {
+  position: fixed;
+  top: 60;
+  left: $sidebarMaxWidth;
+  right: 0;
+  height: 56px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: $mainBg;
+  .hashtag-grid {
+    height: 100%;
+    display: flex;
+    overflow-x: hidden;
+    .hashtag-mixin {
+      margin: 12px 12px 12px 0px;
+      padding: 0px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      background-color: rgb(55, 55, 55);
+      cursor: pointer;
+      &:nth-child(2) {
+        margin: 12px 12px 12px 24px !important;
+      }
+      &:nth-last-child(2) {
+        margin: 12px 24px 12px 0px;
+      }
+      &.selected {
+        background: #fff;
+        color: #030303;
+      }
+      .hashtag-mixin__text {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
+      }
+    }
+    .hashtag__right-arrow {
+      position: absolute;
+      right: 0;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .hashtag__right-arrow-button {
+        width: 56px;
+        height: 100%;
+        background: rgba(33, 33, 33, 0.98);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      &::before {
+        height: 100%;
+        width: 50px;
+        content: "";
+        pointer-events: none;
+        background: linear-gradient(to left, rgba(33, 33, 33, 0.98) 20%, rgba(255, 255, 255, 0) 80%);
+      }
+    }
+    .hashtag__left-arrow {
+      position: absolute;
+      left: 0;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .hashtag__left-arrow-button {
+        width: 56px;
+        height: 100%;
+        background: rgba(33, 33, 33, 0.98);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      &::after {
+        height: 100%;
+        width: 50px;
+        content: "";
+        pointer-events: none;
+        background: linear-gradient(to right, rgba(33, 33, 33, 0.98) 20%, rgba(255, 255, 255, 0) 80%);
+      }
+    }
+  }
 }

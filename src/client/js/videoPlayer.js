@@ -12,6 +12,10 @@ const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 const videoControlsBg = document.querySelector(".videoControls__bg");
+const videoCommentArea = document.querySelector("textarea");
+const likeBtn = document.querySelector(".video__like");
+const saveBtn = document.querySelector(".video__save");
+const subscribeBtn = document.querySelector(".subscribe");
 
 let volumeCfg;
 let videoStatus;
@@ -37,16 +41,17 @@ const handleRangeUpdate = (selected) => {
 const handlePlayClick = () => {
   if (video.paused) {
     video.play();
+    handleStart();
   } else {
     video.pause();
   }
   videoStatus = !video.paused;
-  playBtnIcon.classList = video.paused ? "fa-solid fa-play" : "fa-solid fa-pause";
+  playBtnIcon.innerText = video.paused ? "play_arrow" : "pause";
   handleRangeUpdate("timeline");
 };
 
 const setMute = () => {
-  muteBtnIcon.classList = video.muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high";
+  muteBtnIcon.innerText = video.muted ? "volume_off" : "volume_up";
   if (video.muted) {
     volumeCfg.current = "0";
   } else {
@@ -72,10 +77,10 @@ const handleVolumeChange = (event) => {
   } = event;
   if (value === "0") {
     video.muted = true;
-    muteBtnIcon.classList = "fa-solid fa-volume-high";
+    muteBtnIcon.innerText = "volume_up";
   } else {
     video.muted = false;
-    muteBtnIcon.classList = "fa-solid fa-volume-xmark";
+    muteBtnIcon.innerText = "volume_off";
   }
   volumeCfg.current = value;
   volumeCfg.muted = video.muted;
@@ -140,10 +145,10 @@ const handleFullScreen = () => {
   const fullscreen = document.fullscreenElement;
   if (fullscreen) {
     document.exitFullscreen();
-    fullScreenIcon.classList = "fa-solid fa-expand";
+    fullScreenIcon.innerText = "fullscreen";
   } else {
     videoContainer.requestFullscreen();
-    fullScreenIcon.classList = "fa-solid fa-compress";
+    fullScreenIcon.innerText = "fullscreen_exit";
   }
 };
 
@@ -173,13 +178,26 @@ const handleMouseLeave = () => {
   hideControls();
 };
 
-const handleEnded = () => {
+const handleStart = () => {
   const { id } = videoContainer.dataset;
-  fetch(`/api/videos/${id}/view`, { method: "POST" });
+  fetch(`/api/videos/${id}/history`, { method: "POST" });
+};
+
+const handleEnded = async () => {
+  const { id } = videoContainer.dataset;
+  const response = await fetch(`/api/videos/${id}/view`, { method: "POST" });
+  if (response.status === 200) {
+    const { views } = await response.json();
+    const countSection = document.querySelector(".video__view-count");
+    countSection.innerText = views;
+  }
 };
 
 const handleShortcut = (event) => {
   const { target, code } = event;
+  if (target.nodeName == "TEXTAREA" || target.nodeName == "INPUT") {
+    return;
+  }
   target.blur();
   if (code === "Space") {
     handlePlayClick();
@@ -198,6 +216,74 @@ const handleShortcut = (event) => {
   }
 };
 
+const likeInit = (count, liked) => {
+  const likeIcon = likeBtn.querySelector("span:first-child");
+  const likeCount = likeBtn.querySelector("span:last-child");
+  likeIcon.innerText = liked === true ? "thumb_up" : "thumb_up_off_alt";
+  likeCount.innerText = count;
+};
+
+const handleCheckedLike = async () => {
+  const { id } = videoContainer.dataset;
+  const response = await fetch(`/api/videos/${id}/check-like`, { method: "POST" });
+  if (response.status === 200) {
+    const { count, liked } = await response.json();
+    likeInit(count, liked);
+  }
+};
+
+const handleLike = async (event) => {
+  event.preventDefault();
+  const videoId = videoContainer.dataset.id;
+  const response = await fetch(`/api/videos/${videoId}/like`, {
+    method: "POST",
+  });
+  if (response.status === 200) {
+    const { count, liked } = await response.json();
+    likeInit(count, liked);
+  }
+};
+
+const handleCheckedLater = async () => {
+  const { id } = videoContainer.dataset;
+  const response = await fetch(`/api/videos/${id}/check-later`, { method: "POST" });
+  if (response.status === 200) {
+    const { checked } = await response.json();
+    return checked;
+  }
+};
+
+const handleDialog = async (event) => {
+  event.preventDefault();
+  const checked = await handleCheckedLater();
+  if (checked === undefined) {
+    return;
+  }
+  const dialog = document.querySelector(".dialog");
+  const saveCloseBtn = dialog.querySelector(".save__close");
+  const checkbox = dialog.querySelector("input[type='checkbox']");
+  if (checked === true) {
+    checkbox.setAttribute("checked", "checked");
+  } else {
+    checkbox.removeAttribute("checked");
+  }
+  dialog.classList.toggle("close");
+  if (dialog.classList.contains("close")) {
+    saveCloseBtn.removeEventListener("click", handleDialog);
+    checkbox.removeEventListener("change", handleLater);
+  } else {
+    saveCloseBtn.addEventListener("click", handleDialog);
+    checkbox.addEventListener("change", handleLater);
+  }
+};
+
+const handleLater = async () => {
+  const { id } = videoContainer.dataset;
+  const response = await fetch(`/api/videos/${id}/later`, { method: "POST" });
+  if (response.status === 200) {
+  }
+};
+
 const videoInit = () => {
   getVolumeConfig();
   volumeRange.value = volumeCfg.current;
@@ -206,7 +292,30 @@ const videoInit = () => {
   setMute();
 };
 
+const handleSubscribe = async (event) => {
+  event.preventDefault();
+  const channelSection = document.querySelector(".channel__subscribe-action");
+  const { owner } = channelSection.dataset;
+  const response = await fetch(`/api/videos/${owner}/subscribe`, { method: "POST" });
+  if (response.status === 200) {
+    const { result } = await response.json();
+    if (result === true) {
+      subscribeBtn.classList.add("subscribed");
+      subscribeBtn.innerText = "Subscribed";
+    } else {
+      subscribeBtn.classList.remove("subscribed");
+      subscribeBtn.innerText = "Subscribe";
+    }
+  }
+};
+
+const setCommentEditor = () => {
+  videoCommentArea.style.height = "";
+  videoCommentArea.style.height = `${videoCommentArea.scrollHeight}px`;
+};
+
 videoInit();
+handleCheckedLike();
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
@@ -222,3 +331,13 @@ fullScreenBtn.addEventListener("click", handleFullScreen);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 window.addEventListener("keydown", handleShortcut);
+likeBtn.addEventListener("click", handleLike);
+saveBtn.addEventListener("click", handleDialog);
+
+if (subscribeBtn) {
+  subscribeBtn.addEventListener("click", handleSubscribe);
+}
+
+if (videoCommentArea) {
+  videoCommentArea.addEventListener("input", setCommentEditor);
+}

@@ -1,0 +1,20 @@
+extends base
+include mixins/video
+
+block sidebar
+    include partials/sidebar
+
+block content
+    div.content.feed.hashtag
+        div.hashtag__header
+            h1 #{pageTitle}
+            span < #{videos.length} videos
+        div.hashtag__content
+            div.video-grid
+                each video in videos
+                    +video(video)
+                else
+                    span.empty__message No videos found
+
+block scripts
+    script(src="/static/js/videoMain.js")

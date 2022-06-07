@@ -1,0 +1,43 @@
+extends ../base
+include ../mixins/video-col
+
+block sidebar
+    include ../partials/sidebar
+
+block content
+    div.content.feed
+        div.container
+            div.header
+                h3.title History
+                if library.histories.length > 0
+                    a(href="/videos/history").see SEE ALL
+                else
+                    span
+            div.library-grid
+                each history in library.histories
+                    +video(history.video, uploadedTime.histories)
+                else
+                    span.empty__message This list has no videos.
+            hr.library-line
+            div.header
+                h3.title Watch later
+                if library.laters.length > 0
+                    a(href="/videos/playlist/later").see SEE ALL
+                else
+                    span
+            div.library-grid
+                each later in library.laters
+                    +video(later.video, uploadedTime.laters)
+            hr.library-line
+            div.header
+                h3.title Liked videos
+                if library.likes.length > 0
+                    a(href="/videos/playlist/liked").see SEE ALL
+                else
+                    span
+            div.library-grid
+                each like in library.likes
+                    +video(like.video, uploadedTime.likes)
+
+block scripts
+    script(src="/static/js/videoMain.js")

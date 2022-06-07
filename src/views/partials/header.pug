@@ -1,29 +1,34 @@
-header
-    a(href="/").header__logo
-        i.fa-brands.fa-youtube
-    nav
-        ul
-            li
-                a(href="/search")
-                    i.fa-solid.fa-magnifying-glass
-            if loggedIn
-                li
-                    a(href="/videos/upload") Upload Video
-                li
-                    a(href="/users/edit") Edit Profile
-                li
-                    a(href="/users/logout") Log Out
-                li
-                    a(href=`/users/${loggedInUser._id}`)
-                        if loggedInUser.socialOnly
-                            img.header__avatar(src=loggedInUser.avatarUrl)
+header.header
+    div.logo.left
+        i.material-icons#menu menu
+        a(href="/").header__logo
+            img(src="https://www.logo.wine/a/logo/YouTube/YouTube-White-Full-Color-Dark-Background-Logo.wine.svg")
+    div.search.center
+        form(method="GET" action="/search").search__form
+            input(placeholder="Search by title" name="keyword" type="text")
+            button
+                i.material-icons search
+    div.icons.right
+        if loggedIn
+            a(href="/videos/upload")
+                i.material-icons videocam
+            a(href="/users/edit")
+                i.material-icons manage_accounts
+            a(href="/users/logout")
+                i.material-icons logout
+            a(href=`/users/${loggedInUser._id}`)
+                if loggedInUser.socialOnly
+                    img.header__avatar(src=loggedInUser.avatarUrl)
+                else
+                    if loggedInUser.avatarUrl
+                        img.header__avatar(src="/" + loggedInUser.avatarUrl)
+                    else
+                        if loggedInUser.avatarUrl
+                            img.header__avatar(src="/" + loggedInUser.avatarUrl)
                         else
-                            if loggedInUser.avatarUrl
-                                img.header__avatar(src="/" + loggedInUser.avatarUrl)
-                            else
-                                span 😀
-            else
-                li
-                    a(href="/login") Login
-                li
-                    a(href="/join").header__btn Join
+                            img.header__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
+        else
+            a(href="/login")
+                i.material-icons login
+            a(href="/join")
+                i.material-icons person_add

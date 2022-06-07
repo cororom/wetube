@@ -1,15 +1,20 @@
-form {
-  label {
-    font-size: 14px;
-    margin-bottom: 10px;
-    display: block;
+.edit-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  form {
+    label {
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: block;
+    }
   }
-}
-
-.edit-profile__password {
-  margin-top: 50px;
-  text-align: center;
-  a {
-    text-decoration: underline;
+  .edit-profile__password {
+    margin-top: 50px;
+    text-align: center;
+    a {
+      text-decoration: underline;
+    }
   }
 }

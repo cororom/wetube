@@ -1,0 +1,19 @@
+extends ../base
+include ../mixins/video-row
+
+block sidebar
+    include ../partials/sidebar
+
+block content
+    div.content.feed
+        div.container
+            h3.header Watch history
+            each item, key in videos.reverse()
+                if key === 0 || moment(item.createdAt).format("YYYYMMDD") !== moment(videos[key-1].createdAt).format("YYYYMMDD")
+                    h3.date=moment(item.createdAt).format("MMM DD")
+                +videoRow(item.video)
+            else
+                span.empty__message This list has no videos.
+
+block scripts
+    script(src="/static/js/videoMain.js")

@@ -5,8 +5,10 @@
 
 .video-grid {
   display: grid;
-  gap: 50px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(263px, 359px));
+  grid-template-rows: repeat(auto-fill, minmax(246px, 302px));
+  grid-gap: 1rem;
+  justify-content: center;
 }
 
 .auth-switch {
@@ -21,4 +23,6 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
+  font-size: 110px;
+  text-align: center;
 }

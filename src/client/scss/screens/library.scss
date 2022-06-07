@@ -1,0 +1,9 @@
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 210px);
+  grid-template-rows: repeat(auto-fill, 210px);
+  grid-gap: 5px;
+}
+.library-line {
+  margin-top: 24px;
+}

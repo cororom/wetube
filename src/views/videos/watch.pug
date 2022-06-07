@@ -1,37 +1,113 @@
 extends ../base
+include ../mixins/comment
+include ../mixins/video-row
+
+block sidebar
+    include ../partials/drawer
 
 block content
-    div#videoContainer(data-id=video._id)
-        video(src="/" + video.fileUrl)
-        div.videoControls__bg
-        div#videoControls.videoControls
-            div.videoControls__play
-                span#play.videoControls__playBtn
-                    i.fa-solid.fa-play
-                div.videoControls__time
-                    span#currenTime 00:00
-                    span  / 
-                    span#totalTime 00:00
-            input(type="range" step="1" value="0" min="0")#timeline.videoControls__timeline
-            div.videoControls__volume
-                input(type="range" step="0.1" value=0.5 min="0" max="1")#volume
-                span#mute
-                    i.fa-solid.fa-volume-high
-            div
-                span#fullScreen
-                    i.fa-solid.fa-expand
-    //-
-        div
-            p=video.description
-            small=video.createdAt
-            h3 #{video.meta.views} #{video.meta.views === 1 ? "view" : "views"}
-        div
-            small Uploaded by 
-                a(href=`/users/${video.owner._id}`)=video.owner.name
-        if String(video.owner._id) === String(loggedInUser._id)
-            a(href=`${video._id}/edit`) Edit Video &rarr;
-            br
-            a(href=`${video._id}/delete`) Delete Video &rarr;
+    include ../partials/save
+    div.video__content
+        div.video__primary
+            div#videoContainer(data-id=video._id)
+                video(src="/" + video.fileUrl)
+                div.videoControls__bg
+                div#videoControls.videoControls
+                    div.videoControls__play
+                        span#play.videoControls__playBtn
+                            i.material-icons play_arrow
+                        div.videoControls__time
+                            span#currenTime 00:00
+                            span  / 
+                            span#totalTime 00:00
+                    input(type="range" step="1" value="0" min="0")#timeline.videoControls__timeline
+                    div.videoControls__volume
+                        input(type="range" step="0.1" value=0.5 min="0" max="1")#volume
+                        span#mute
+                            i.material-icons volume_up
+                    div
+                        span#fullScreen
+                            i.material-icons fullscreen
+
+            div.video__data
+                div.video__hashtags
+                    each hashtag in video.hashtags
+                        a.video__hashtag(href=`/videos/hashtag/${hashtag.startsWith("#") ? hashtag.substring(1) : hashtag}`) #{hashtag} 
+                h1.video__title=video.title
+                div.video__info
+                    div.video__text
+                        span.video__view-count=video.meta.views
+                        span  #{video.meta.views === 1 ? "view" : "views"} • 
+                        span.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+                    div.video__menu
+                        div.video__like
+                            if loggedIn === false
+                                span.material-icons thumb_up_off_alt
+                            else
+                                if user.likes.indexOf(video._id) !== -1
+                                    span.material-icons thumb_up
+                                else
+                                    span.material-icons thumb_up_off_alt
+                            span=video.likes
+                        div.video__share
+                            span.material-icons share
+                            span SHARE
+                        div.video__save
+                            span.material-icons playlist_add
+                            span SAVE
+                hr
+                div.owner__info
+                    if video.owner.socialOnly
+                        a(href=`/users/${video.owner._id}`)
+                            img.owner__avatar(src=video.owner.avatarUrl)
+                    else
+                        if video.owner.avatarUrl
+                            a(href=`/users/${video.owner._id}`)
+                                img.owner__avatar(src="/" + video.owner.avatarUrl)
+                        else
+                            a(href=`/users/${video.owner._id}`)
+                                img.owner__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
+                    div.owner__text
+                        a(href=`/users/${video.owner._id}`).channel-name=video.owner.name
+                        span.sub-count #{video.meta.views} #{(video.meta.views > 1) ? "subscribers" : "subscriber"}
+                    div.owner__action
+                        if String(video.owner._id) === String(loggedInUser._id)
+                            a(href=`${video.id}/edit`)
+                                span Edit
+                            a(href=`${video.id}/delete`)
+                                span Delete
+                        else
+                            div(data-owner=`${video.owner._id}`).channel__subscribe-action
+                                if subscribed
+                                    button.subscribe.subscribed Subscribed
+                                else
+                                    button.subscribe Subscribe
+                hr
+            if loggedIn
+                div.video__comment-write
+                    if loggedInUser.socialOnly
+                        img.comment__avatar(src=loggedInUser.avatarUrl)
+                    else
+                        if (loggedInUser.avatarUrl !== undefined)
+                            img.comment__avatar(src="/" + loggedInUser.avatarUrl)
+                        else
+                            img.comment__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
+                    form.video__comment-form#commentForm
+                        textarea(cols="30", rows="1", placeholder="Add a comment...").textarea
+                        div.comment__add
+                            input(type="button" value="CANCEL").cancel-button
+                            input(type="submit" value="COMMENT").add-button
+            div.video__comments
+                ul
+                    each comment in video.comments.reverse()
+                        +comment(comment)
+        div.video__secondary
+            each item in secondary
+                +videoRow(item, uploadedTime)
 
 block scripts
     script(src="/static/js/videoPlayer.js")
+    script(src="/static/js/sidebarDrawer.js")
+    script(src="/static/js/videoMain.js")
+    if loggedIn
+        script(src="/static/js/commentSection.js")

@@ -1,0 +1,39 @@
+extends ../base
+include ../mixins/video-row
+
+block sidebar
+    include ../partials/sidebar
+
+block content
+    div.playlist
+        div.playlist__sidebar
+            div.items
+                div.primary-render
+                    if (videos.length > 0)
+                        img(src=`/${videos[0].video.thumbUrl}`)
+                    else
+                        img(src="https://i.ytimg.com/img/no_thumbnail.jpg")
+                    h1.playlist__title=title
+                    div.stats
+                        span.list__count 0 video
+                    div.privacy-stats
+                        span.material-icons lock
+                        span.privacy__badge Private
+                div.secondary-render
+                    a(href=`/users/${loggedInUser._id}`)
+                        div.playlist__user
+                            if loggedInUser.socialOnly
+                                img(src=`${loggedInUser.avatarUrl}`).user__avatar
+                            else
+                                if loggedInUser.avatarUrl
+                                    img.user__avatar(src="/" + loggedInUser.avatarUrl)
+                                else
+                                    div.user__avatar 😀
+                            span.user__name=loggedInUser.name
+        div.playlist__content
+            each item, key in videos
+                +videoRow(item.video)
+
+block scripts
+    script(src="/static/js/videoMain.js")
+

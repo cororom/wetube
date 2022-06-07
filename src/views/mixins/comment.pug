@@ -1,0 +1,18 @@
+mixin comment(comment)
+    li.video__comment(data-id=comment._id)
+        a(href=`/users/${comment.owner._id}`)
+            if comment.owner.socialOnly
+                img(src=`${comment.owner.avatarUrl}`).comment__avatar
+            else
+                if comment.owner.avatarUrl !== undefined
+                    img(src=`/${comment.owner.avatarUrl}`).comment__avatar
+                else
+                    img(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo").comment__avatar
+        div.comment__info
+            a(href=`/users/${comment.owner._id}`)
+                span.comment__owner=comment.owner.name
+            span.comment__text=comment.text
+        div.comment__action
+            if String(comment.owner._id) === String(loggedInUser._id)
+                button.commentEdit Edit
+                button.commentDelete Delete
