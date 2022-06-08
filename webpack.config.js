@@ -12,8 +12,6 @@ module.exports = {
     commentSection: BASE_JS + "commentSection.js",
     sidebarDrawer: BASE_JS + "sidebarDrawer.js",
   },
-  mode: "development",
-  watch: true,
   plugins: [
     new MiniCssExtractPlugin({
       filename: "css/styles.css",
