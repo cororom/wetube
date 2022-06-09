@@ -221,5 +221,9 @@
   }
   .video__secondary {
     width: 30%;
+    .video-item {
+      word-break: break-all;
+      text-overflow: ellipsis;
+    }
   }
 }
