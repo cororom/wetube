@@ -6,10 +6,12 @@ import History from "../models/History";
 import Like from "../models/Like";
 import Later from "../models/Later";
 import Subscribe from "../models/Subscribe";
+import { directUpload } from "../middlewares";
 import ffmpeg from "fluent-ffmpeg";
 import { path as ffmpeg_path } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobe_path } from "@ffprobe-installer/ffprobe";
 import FastPreview from "fast-preview";
+import fs from "fs";
 const moment = require("moment");
 
 export const unitFormatter = (number, digits) => {
@@ -184,6 +186,61 @@ export const getUpload = (req, res) => {
   return res.render("videos/upload", { pageTitle: "Upload Video" });
 };
 
+export const getVideoInfo = (inputPath) => {
+  return new Promise((resolve, reject) => {
+    return ffmpeg.ffprobe(inputPath, (error, videoInfo) => {
+      if (error) {
+        return reject(error);
+      }
+
+      const { duration, size } = videoInfo.format;
+
+      return resolve({
+        size,
+        durationInSeconds: Math.floor(duration),
+      });
+    });
+  });
+};
+
+export const getRandomIntegerInRange = (min, max) => {
+  const minInt = Math.ceil(min);
+  const maxInt = Math.floor(max);
+
+  return Math.floor(Math.random() * (maxInt - minInt + 1) + minInt);
+};
+
+const getStartTimeInSeconds = (videoDurationInSeconds, fragmentDurationInSeconds) => {
+  // by subtracting the fragment duration we can be sure that the resulting
+  // start time + fragment duration will be less than the video duration
+  const safeVideoDurationInSeconds = videoDurationInSeconds - fragmentDurationInSeconds;
+
+  // if the fragment duration is longer than the video duration
+  if (safeVideoDurationInSeconds <= 0) {
+    return 0;
+  }
+
+  return getRandomIntegerInRange(0.25 * safeVideoDurationInSeconds, 0.75 * safeVideoDurationInSeconds);
+};
+
+const createFragmentPreview = async (inputPath, outputPath, fragmentDurationInSeconds = 4) => {
+  return new Promise(async (resolve, reject) => {
+    const { durationInSeconds: videoDurationInSeconds } = await getVideoInfo(inputPath);
+
+    const startTimeInSeconds = getStartTimeInSeconds(videoDurationInSeconds, fragmentDurationInSeconds);
+
+    return ffmpeg()
+      .input(inputPath)
+      .inputOptions([`-ss ${startTimeInSeconds}`])
+      .outputOptions([`-t ${fragmentDurationInSeconds}`])
+      .noAudio()
+      .output(outputPath)
+      .on("end", resolve)
+      .on("error", reject)
+      .run();
+  });
+};
+
 export const postUpload = async (req, res) => {
   const {
     session: {
@@ -192,39 +249,74 @@ export const postUpload = async (req, res) => {
     files: { video, thumb },
     body: { title, description, hashtags },
   } = req;
-  const { filename: videoName, path: videoPath } = video[0];
-  const uploadDir = videoPath.split("/").slice(0, -1).join("/");
-  let thumbUrl;
-  if (thumb === undefined) {
-    thumbUrl = `${videoPath}_thumb.jpg`;
-    ffmpeg(`./${videoPath}`).screenshots({
-      count: 1,
-      filename: `${videoName}_thumb.jpg`,
-      folder: `./${uploadDir}`,
-      size: "320x240",
-    });
+  const isHeroku = process.env.NODE_ENV === "production";
+  let videoPath, videoName, uploadDir;
+  if (isHeroku) {
+    videoPath = video[0].location;
+    videoName = video[0].key;
+    uploadDir = "videos";
   } else {
-    thumbUrl = thumb[0].path;
+    videoPath = video[0].path;
+    videoName = video[0].filename;
+    uploadDir = video[0].destination.slice(0, -1);
   }
-  FastPreview.setFfmpegPath(ffmpeg_path);
-  FastPreview.setFfprobePath(ffprobe_path);
-  const preview = new FastPreview(videoPath, {
-    clip_count: 4,
-    clip_time: 4,
-    clip_select_strategy: "max-size", // max-size min-size random
-    clip_range: [0.1, 0.9],
-    fps_rate: 10, // 'keep' number
-    dist_path: `./${uploadDir}`,
-    speed_multi: 2,
-  });
-  preview.exec();
+  let thumbUrl, uploadTarget;
+  let uploadParam = {
+    Bucket: "wetube-amazing/images",
+    Key: `${videoName}_thumb.jpg`,
+    ACL: "public-read",
+    ContentType: "image/jpeg",
+  };
+  if (thumb === undefined) {
+    thumbUrl = isHeroku ? `${videoPath.replace("/videos/", "/images/")}_thumb.jpg` : `${videoPath}_thumb.jpg`;
+    ffmpeg(isHeroku ? videoPath : `./${videoPath}`)
+      .screenshots({
+        count: 1,
+        filename: `${videoName}_thumb.jpg`,
+        folder: "./uploads/videos",
+        size: "320x240",
+      })
+      .on("end", () => {
+        if (isHeroku) {
+          uploadTarget = process.cwd() + `/uploads/videos/${videoName}_thumb.jpg`;
+          uploadParam.Body = fs.createReadStream(uploadTarget);
+          directUpload(uploadParam);
+        }
+      });
+  } else {
+    thumbUrl = isHeroku ? thumb[0].location : thumb[0].path;
+  }
+  let preview, previewUrl;
+  if (!isHeroku) {
+    FastPreview.setFfmpegPath(ffmpeg_path);
+    FastPreview.setFfprobePath(ffprobe_path);
+    preview = new FastPreview(videoPath, {
+      clip_count: 4,
+      clip_time: 4,
+      clip_select_strategy: "max-size", // max-size min-size random
+      clip_range: [0.1, 0.9],
+      fps_rate: 10, // 'keep' number
+      dist_path: "./uploads/videos",
+      speed_multi: 2,
+    });
+    preview.exec();
+    previewUrl = `${uploadDir}/${preview.filename}.webp`;
+  } else {
+    uploadTarget = process.cwd() + `/uploads/videos/${videoName}.webp`;
+    await createFragmentPreview(videoPath, uploadTarget, 4);
+    uploadParam.Bucket = "wetube-amazing/videos";
+    uploadParam.Key = `${videoName}.webp`;
+    uploadParam.Body = fs.createReadStream(uploadTarget);
+    uploadParam.ContentType = "image/webp";
+    directUpload(uploadParam);
+  }
   try {
     const newVideo = await Video.create({
       title,
       description,
       fileUrl: videoPath,
       thumbUrl,
-      previewUrl: `${uploadDir}/${preview.filename}.webp`,
+      previewUrl: isHeroku ? `${videoPath}.webp` : previewUrl,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });

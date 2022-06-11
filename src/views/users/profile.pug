@@ -8,7 +8,7 @@ block content
     div.content
         div.container
             div.profile__data
-                if user.socialOnly
+                if user.avatarUrl.includes("http")
                     img(src=user.avatarUrl).avatar
                 else
                     if user.avatarUrl

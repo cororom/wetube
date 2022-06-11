@@ -10,7 +10,7 @@ block content
     div.video__content
         div.video__primary
             div#videoContainer(data-id=video._id)
-                video(src="/" + video.fileUrl)
+                video(src=(video.fileUrl.indexOf("http") !== -1 ? video.fileUrl : "/" + video.fileUrl))
                 div.videoControls__bg
                 div#videoControls.videoControls
                     div.videoControls__play
@@ -57,7 +57,7 @@ block content
                             span SAVE
                 hr
                 div.owner__info
-                    if video.owner.socialOnly
+                    if video.owner.avatarUrl.indexOf("http") !== -1
                         a(href=`/users/${video.owner._id}`)
                             img.owner__avatar(src=video.owner.avatarUrl)
                     else
@@ -85,7 +85,7 @@ block content
                 hr
             if loggedIn
                 div.video__comment-write
-                    if loggedInUser.socialOnly
+                    if loggedInUser.avatarUrl.indexOf("http") !== -1
                         img.comment__avatar(src=loggedInUser.avatarUrl)
                     else
                         if (loggedInUser.avatarUrl !== undefined)

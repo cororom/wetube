@@ -21,12 +21,12 @@ header.header
                     img.header__avatar(src=loggedInUser.avatarUrl)
                 else
                     if loggedInUser.avatarUrl
-                        img.header__avatar(src="/" + loggedInUser.avatarUrl)
-                    else
-                        if loggedInUser.avatarUrl
-                            img.header__avatar(src="/" + loggedInUser.avatarUrl)
+                        if (loggedInUser.avatarUrl.includes("http"))
+                            img.header__avatar(src=loggedInUser.avatarUrl)
                         else
-                            img.header__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
+                            img.header__avatar(src="/" + loggedInUser.avatarUrl)
+                    else
+                        img.header__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
         else
             a(href="/login")
                 i.material-icons login

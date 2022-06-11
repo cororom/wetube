@@ -1,6 +1,6 @@
 mixin video(video, uploadedTime)
-    div(data-id=video._id data-preview="/" + video.previewUrl data-thumb="/" + video.thumbUrl).video-col-mixin.video-item
-        div.video-mixin__thumb(style=`background-image:url(/${video.thumbUrl});background-size:cover;background-position:center;`)
+    div(data-id=video._id data-preview=(video.previewUrl.includes("http") ? video.previewUrl : "/" + video.previewUrl) data-thumb=(video.thumbUrl.includes("http") ? video.thumbUrl : "/" + video.thumbUrl)).video-col-mixin.video-item
+        div.video-mixin__thumb(style=`background-image:url(${video.thumbUrl.includes("http") ? video.thumbUrl : "/" + video.thumbUrl});background-size:cover;background-position:center;`)
         div.video-mixin__data
             div.video-mixin__meta
                 h3.video-mixin__title=video.title
