@@ -403,7 +403,7 @@ export const search = async (req, res) => {
     }
     videos = await Video.find({
       title: {
-        $regex: new RegExp(`${keyword}$`, "i"),
+        $regex: new RegExp(keyword, "i"),
       },
     }).populate("owner");
     videos.forEach((element, index, theArray) => {
