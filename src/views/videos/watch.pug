@@ -37,7 +37,7 @@ block content
                 div.video__info
                     div.video__text
                         span.video__view-count=video.meta.views
-                        span  #{video.meta.views === 1 ? "view" : "views"} • 
+                        span  #{video.meta.views <= 1 ? "view" : "views"} • 
                         span.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
                     div.video__menu
                         div.video__like
@@ -82,6 +82,8 @@ block content
                                     button.subscribe.subscribed Subscribed
                                 else
                                     button.subscribe Subscribe
+                div.video__description
+                    span=video.description
                 hr
             if loggedIn
                 div.video__comment-write
