@@ -9,6 +9,16 @@ import usersRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 import apiRouter from "./routers/apiRouter";
 import { localsMiddleware } from "./middlewares";
+import fs from "fs";
+
+const videoDir = "./uploads/videos";
+if (!fs.existsSync(videoDir)) {
+  fs.mkdirSync(videoDir, { recursive: true });
+}
+const avatarDir = "./uploads/avatars";
+if (!fs.existsSync(avatarDir)) {
+  fs.mkdirSync(avatarDir, { recursive: true });
+}
 
 const app = express();
 const logger = morgan("dev");

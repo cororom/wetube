@@ -8,13 +8,14 @@ block content
     div.content
         div.container
             div.profile__data
-                if user.avatarUrl.includes("http")
-                    img(src=user.avatarUrl).avatar
-                else
-                    if user.avatarUrl
-                        img(src="/" + user.avatarUrl).avatar
+                if user.avatarUrl
+                    if user.avatarUrl.includes("http")
+                        img(src=user.avatarUrl).avatar
                     else
-                        div.avatar 😀
+                        if user.avatarUrl
+                            img(src="/" + user.avatarUrl).avatar
+                else
+                    div.avatar 😀
                 h3=user.name
             if (user.videos)
                 div.video-grid

@@ -57,16 +57,16 @@ block content
                             span SAVE
                 hr
                 div.owner__info
-                    if video.owner.avatarUrl.indexOf("http") !== -1
-                        a(href=`/users/${video.owner._id}`)
-                            img.owner__avatar(src=video.owner.avatarUrl)
-                    else
-                        if video.owner.avatarUrl
+                    if video.owner.avatarUrl
+                        if video.owner.avatarUrl.indexOf("http") !== -1
                             a(href=`/users/${video.owner._id}`)
-                                img.owner__avatar(src="/" + video.owner.avatarUrl)
+                                img.owner__avatar(src=video.owner.avatarUrl)
                         else
                             a(href=`/users/${video.owner._id}`)
-                                img.owner__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
+                                img.owner__avatar(src="/" + video.owner.avatarUrl)
+                    else
+                        a(href=`/users/${video.owner._id}`)
+                            img.owner__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
                     div.owner__text
                         a(href=`/users/${video.owner._id}`).channel-name=video.owner.name
                         span.sub-count #{video.meta.views} #{(video.meta.views > 1) ? "subscribers" : "subscriber"}
@@ -85,13 +85,13 @@ block content
                 hr
             if loggedIn
                 div.video__comment-write
-                    if loggedInUser.avatarUrl.indexOf("http") !== -1
-                        img.comment__avatar(src=loggedInUser.avatarUrl)
-                    else
-                        if (loggedInUser.avatarUrl !== undefined)
-                            img.comment__avatar(src="/" + loggedInUser.avatarUrl)
+                    if loggedInUser.avatarUrl
+                        if loggedInUser.avatarUrl.indexOf("http") !== -1
+                            img.comment__avatar(src=loggedInUser.avatarUrl)
                         else
-                            img.comment__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
+                            img.comment__avatar(src="/" + loggedInUser.avatarUrl)
+                    else
+                        img.comment__avatar(src="https://yt3.ggpht.com/ytc/AKedOLS8CWf3Z4Q7MlUICz8ViNWqytCgcMm-t3ZkkCe1OEAUGCPmxqVJud58ULUlRFjs=s88-c-k-c0x00ffffff-no-rj-mo")
                     form.video__comment-form#commentForm
                         textarea(cols="30", rows="1", placeholder="Add a comment...").textarea
                         div.comment__add

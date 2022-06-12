@@ -120,6 +120,9 @@ const formatTime = (second) => {
 const handleLoadedMetadata = () => {
   totalTime.innerText = formatTime(Math.floor(video.duration));
   timeline.max = Math.floor(video.duration);
+  if (video.readyState == 4) {
+    handlePlayClick();
+  }
 };
 
 const handleTimeUpdate = () => {
@@ -340,4 +343,8 @@ if (subscribeBtn) {
 
 if (videoCommentArea) {
   videoCommentArea.addEventListener("input", setCommentEditor);
+}
+
+if (video.readyState == 4) {
+  handleLoadedMetadata();
 }

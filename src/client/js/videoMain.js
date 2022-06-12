@@ -47,10 +47,12 @@ const setVideos = (video, uploadedTime) => {
   const videoItem = document.createElement("div");
   videoItem.className = "video-mixin video-item";
   videoItem.dataset.id = video._id;
-  videoItem.dataset.preview = `/${video.previewUrl}`;
-  videoItem.dataset.thumb = `/${video.thumbUrl}`;
+  videoItem.dataset.preview = video.previewUrl.includes("http") ? video.previewUrl : `/${video.previewUrl}`;
+  videoItem.dataset.thumb = video.thumbUrl.includes("http") ? video.thumbUrl : `/${video.thumbUrl}`;
   const thumb = document.createElement("div");
-  thumb.style = `background-image:url(/${video.thumbUrl});background-size:cover;background-position:center;`;
+  thumb.style = video.thumbUrl.includes("http")
+    ? `background-image:url(${video.thumbUrl});background-size:cover;background-position:center;`
+    : `background-image:url(/${video.thumbUrl});background-size:cover;background-position:center;`;
   thumb.className = "video-mixin__thumb";
   const data = document.createElement("div");
   data.className = "video-mixin__data";

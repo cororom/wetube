@@ -10,10 +10,13 @@ block content
             div.items
                 div.primary-render
                     if (videos.length > 0)
-                        if (videos[0].video.thumbUrl.includes("http"))
-                            img(src=`${videos[0].video.thumbUrl}`)
+                        if videos[0].video.thumbUrl
+                            if videos[0].video.thumbUrl.includes("http")
+                                img(src=`${videos[0].video.thumbUrl}`)
+                            else
+                                img(src=`/${videos[0].video.thumbUrl}`)
                         else
-                            img(src=`/${videos[0].video.thumbUrl}`)
+                            img(src="https://i.ytimg.com/img/no_thumbnail.jpg")
                     else
                         img(src="https://i.ytimg.com/img/no_thumbnail.jpg")
                     h1.playlist__title=title
@@ -25,13 +28,16 @@ block content
                 div.secondary-render
                     a(href=`/users/${loggedInUser._id}`)
                         div.playlist__user
-                            if loggedInUser.avatarUrl.includes("http")
-                                img(src=`${loggedInUser.avatarUrl}`).user__avatar
-                            else
-                                if loggedInUser.avatarUrl
-                                    img.user__avatar(src="/" + loggedInUser.avatarUrl)
+                            if loggedInUser.avatarUrl
+                                if loggedInUser.avatarUrl.includes("http")
+                                    img(src=`${loggedInUser.avatarUrl}`).user__avatar
                                 else
-                                    div.user__avatar 😀
+                                    if loggedInUser.avatarUrl
+                                        img.user__avatar(src="/" + loggedInUser.avatarUrl)
+                                    else
+                                        div.user__avatar 😀
+                            else
+                                div.user__avatar 😀
                             span.user__name=loggedInUser.name
         div.playlist__content
             each item, key in videos
